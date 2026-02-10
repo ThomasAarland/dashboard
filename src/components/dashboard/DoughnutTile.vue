@@ -36,3 +36,4 @@ const chartOptions = {
   }
 }
 </script>
+
