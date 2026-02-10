@@ -55,14 +55,14 @@ const tileStyle = computed(() => {
   gap: 0.5rem;
   min-height: 170px;
   overflow: hidden;
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
 .bento-tile--interactive {
   cursor: pointer;
-  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
-.bento-tile--interactive:hover {
+.bento-tile:hover {
   transform: translateY(-2px);
   box-shadow:
     0 24px 70px rgba(0, 0, 0, 0.6),

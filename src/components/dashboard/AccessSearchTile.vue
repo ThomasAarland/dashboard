@@ -2,18 +2,20 @@
   <BentoTile
     title="Tilgang og eiendomssøk"
     subtitle="Innlogging via Ambita og oppslag i eiendommer du har grunnlag for å se"
-    :col-span="2"
+    :col-span="4"
     :expanded-col-span="4"
-    clickable
-    :expanded="expanded"
-    @click="emit('toggle')"
   >
     <div class="tile-stack">
       <div class="tile-row">
         <Badge>Ambita SSO</Badge>
         <Badge variant="success">Tilgang ok</Badge>
-        <Badge>Gnr/Bnr: {{ activeProperty.gnrBnr }}</Badge>
-        <Badge>{{ activeProperty.municipality }}</Badge>
+        <template v-if="hasConfirmedProperty">
+          <Badge>Gnr/Bnr: {{ confirmedProperty!.gnrBnr }}</Badge>
+          <Badge>{{ confirmedProperty!.municipality }}</Badge>
+        </template>
+        <template v-else>
+          <Badge variant="neutral">Ingen eiendom valgt</Badge>
+        </template>
       </div>
 
       <div class="search-row" @click.stop>
@@ -47,7 +49,10 @@
         <template v-else-if="searchResults.length">
           Velg en av treffene nedenfor for å forhåndsvise en eiendom.
         </template>
-        <template v-else>Viser nå data for {{ activeProperty.address }}.</template>
+        <template v-else-if="hasConfirmedProperty">
+          Viser nå data for {{ confirmedProperty!.address }}.
+        </template>
+        <template v-else>Velg en eiendom for å vise detaljer i dashboardet.</template>
       </div>
 
       <ul class="search-results" v-if="searchResults.length" @click.stop>
@@ -77,13 +82,7 @@
 import { computed, ref } from 'vue'
 import BentoTile from '../bento/BentoTile.vue'
 import Badge from '../ui/Badge.vue'
-
-type PropertySearchResult = {
-  id: string
-  address: string
-  municipality: string
-  gnrBnr: string
-}
+import type { PropertySearchResult } from '../../models/property'
 
 const propertySuggestions: PropertySearchResult[] = [
   { id: 'prop-1', address: 'Eksempelveien 10', municipality: 'Oslo', gnrBnr: '12/345' },
@@ -92,25 +91,18 @@ const propertySuggestions: PropertySearchResult[] = [
   { id: 'prop-4', address: 'Myrstadveien 55', municipality: 'Trondheim', gnrBnr: '16/302' }
 ]
 
-const props = defineProps<{ expanded: boolean }>()
-const emit = defineEmits<{ (e: 'toggle'): void }>()
-
-const defaultProperty: PropertySearchResult =
-  propertySuggestions[0] ?? {
-    id: 'default-property',
-    address: 'Eksempelveien 10',
-    municipality: 'Oslo',
-    gnrBnr: '12/345'
-  }
+const emit = defineEmits<{
+  (e: 'property-selected', property: PropertySearchResult): void
+}>()
 
 const searchTerm = ref('')
 const searchResults = ref<PropertySearchResult[]>([])
 const selectedProperty = ref<PropertySearchResult | null>(null)
-const confirmedProperty = ref<PropertySearchResult>(defaultProperty)
+const confirmedProperty = ref<PropertySearchResult | null>(null)
 const searchLoading = ref(false)
 const searchError = ref<string | null>(null)
 
-const activeProperty = computed(() => confirmedProperty.value)
+const hasConfirmedProperty = computed(() => confirmedProperty.value !== null)
 
 const performSearch = () => {
   const term = searchTerm.value.trim().toLowerCase()
@@ -146,7 +138,9 @@ const selectProperty = (property: PropertySearchResult) => {
 const confirmSelection = () => {
   if (selectedProperty.value) {
     confirmedProperty.value = selectedProperty.value
+    emit('property-selected', selectedProperty.value)
     searchResults.value = []
+    searchTerm.value = ''
     selectedProperty.value = null
   }
 }

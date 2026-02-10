@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import BentoGrid from '../components/bento/BentoGrid.vue'
 import { useDashboard } from '../composables/useDashboard'
 import AccessSearchTile from '../components/dashboard/AccessSearchTile.vue'
@@ -8,8 +8,9 @@ import HeadlineStatTile from '../components/dashboard/HeadlineStatTile.vue'
 import DataListTile from '../components/dashboard/DataListTile.vue'
 import MapTile from '../components/dashboard/MapTile.vue'
 import ActivityTile from '../components/dashboard/ActivityTile.vue'
+import type { PropertySearchResult } from '../models/property'
 
-const { data, loading, error } = useDashboard()
+const { data, loading, error, reload } = useDashboard()
 
 const headlineStats = computed(() => data.value?.headlineStats ?? [])
 const basicIdentity = computed(() => data.value?.basicData.slice(0, 2) ?? [])
@@ -26,9 +27,16 @@ const buildingCount = computed(() => buildings.value.length)
 const ownerCount = computed(() => (data.value?.ownershipShares.length ?? 0))
 
 const expandedTiles = reactive<Record<string, boolean>>({})
+const selectedProperty = ref<PropertySearchResult | null>(null)
+const hasSelectedProperty = computed(() => !!selectedProperty.value)
 
 const toggleExpand = (id: string) => {
   expandedTiles[id] = !expandedTiles[id]
+}
+
+const handlePropertySelected = (property: PropertySearchResult) => {
+  selectedProperty.value = property
+  reload()
 }
 </script>
 
@@ -54,57 +62,55 @@ const toggleExpand = (id: string) => {
 
     <section v-else-if="data" class="dashboard-page__content">
       <BentoGrid>
-        <AccessSearchTile
-          :expanded="!!expandedTiles['access']"
-          @toggle="toggleExpand('access')"
-        />
+        <AccessSearchTile @property-selected="handlePropertySelected" />
 
-        <template v-if="headlineStats.length">
-          <HeadlineStatTile v-for="stat in headlineStats" :key="stat.id" :stat="stat" />
-        </template>
+        <template v-if="hasSelectedProperty">
+          <template v-if="headlineStats.length">
+            <HeadlineStatTile v-for="stat in headlineStats" :key="stat.id" :stat="stat" />
+          </template>
 
-        <DataListTile
-          title="Identifikasjon"
-          subtitle="Gnr/Bnr og type"
-          list-title="Basisopplysninger"
-          :items="basicIdentity"
-          :col-span="1"
-          :expanded-col-span="2"
-          :expanded="!!expandedTiles['basicIdentity']"
-          @toggle="toggleExpand('basicIdentity')"
-        />
+          <DataListTile
+            title="Identifikasjon"
+            subtitle="Gnr/Bnr og type"
+            list-title="Basisopplysninger"
+            :items="basicIdentity"
+            :col-span="1"
+            :expanded-col-span="2"
+            :expanded="!!expandedTiles['basicIdentity']"
+            @toggle="toggleExpand('basicIdentity')"
+          />
 
-        <DataListTile
-          title="Areal og bruk"
-          subtitle="Størrelse og formål"
-          list-title="Arealinformasjon"
-          :items="basicArea"
-          :col-span="1"
-          :expanded-col-span="2"
-          :expanded="!!expandedTiles['basicArea']"
-          @toggle="toggleExpand('basicArea')"
-        />
+          <DataListTile
+            title="Areal og bruk"
+            subtitle="Størrelse og formål"
+            list-title="Arealinformasjon"
+            :items="basicArea"
+            :col-span="1"
+            :expanded-col-span="2"
+            :expanded="!!expandedTiles['basicArea']"
+            @toggle="toggleExpand('basicArea')"
+          />
 
-        <DataListTile
-          title="Bygninger tilknyttet eiendommen"
-          list-title="Bygninger"
-          :items="buildings"
-          :col-span="2"
-          :expanded-col-span="3"
-          :meta-text="`${buildingCount} registrerte bygninger`"
-          :expanded="!!expandedTiles['buildings']"
-          @toggle="toggleExpand('buildings')"
-        />
+          <DataListTile
+            title="Bygninger tilknyttet eiendommen"
+            list-title="Bygninger"
+            :items="buildings"
+            :col-span="2"
+            :expanded-col-span="3"
+            :meta-text="`${buildingCount} registrerte bygninger`"
+            :expanded="!!expandedTiles['buildings']"
+            @toggle="toggleExpand('buildings')"
+          />
 
-        <DataListTile
-          title="Hovedeiere"
-          subtitle="Største andeler"
-          list-title="Hovedandeler"
-          :items="primaryOwners"
-          :meta-text="`${ownerCount} registrerte eiere`"
-          :expanded="!!expandedTiles['primaryOwners']"
-          @toggle="toggleExpand('primaryOwners')"
-        />
+          <DataListTile
+            title="Hovedeiere"
+            subtitle="Største andeler"
+            list-title="Hovedandeler"
+            :items="primaryOwners"
+            :meta-text="`${ownerCount} registrerte eiere`"
+            :expanded="!!expandedTiles['primaryOwners']"
+            @toggle="toggleExpand('primaryOwners')"
+          />
 
         <DataListTile
           title="Øvrige eiere"
@@ -112,45 +118,52 @@ const toggleExpand = (id: string) => {
           list-title="Øvrige andeler"
           :items="secondaryOwners"
           :meta-text="`${secondaryOwners.length} øvrige eiere`"
-          :expanded="!!expandedTiles['secondaryOwners']"
-          @toggle="toggleExpand('secondaryOwners')"
-        />
-
-        <DataListTile
-          title="Eiendommens beliggenhet"
-          list-title="Adresse, kommune, krets"
-          :items="locationItems"
           :col-span="2"
-          :expanded-col-span="3"
-          :expanded="!!expandedTiles['location']"
-          @toggle="toggleExpand('location')"
+          :expanded-col-span="2"
+          :expanded="true"
+          :clickable="false"
         />
 
-        <MapTile :expanded="!!expandedTiles['map']" @toggle="toggleExpand('map')" />
+          <DataListTile
+            title="Eiendommens beliggenhet"
+            list-title="Adresse, kommune, krets"
+            :items="locationItems"
+            :col-span="2"
+            :expanded-col-span="3"
+            :expanded="!!expandedTiles['location']"
+            @toggle="toggleExpand('location')"
+          />
 
-        <DataListTile
-          title="Pant"
-          subtitle="Hvilke banker har sikkerhet?"
-          list-title="Pant"
-          :items="mortgages"
-          :expanded="!!expandedTiles['mortgages']"
-          @toggle="toggleExpand('mortgages')"
-        />
+          <MapTile :expanded="!!expandedTiles['map']" @toggle="toggleExpand('map')" />
 
-        <DataListTile
-          title="Servitutter"
-          subtitle="Veirett, vannrett m.m."
-          list-title="Servitutter"
-          :items="easements"
-          :expanded="!!expandedTiles['easements']"
-          @toggle="toggleExpand('easements')"
-        />
+          <DataListTile
+            title="Pant"
+            subtitle="Hvilke banker har sikkerhet?"
+            list-title="Pant"
+            :items="mortgages"
+            :expanded="!!expandedTiles['mortgages']"
+            @toggle="toggleExpand('mortgages')"
+          />
 
-        <ActivityTile
-          :activities="activities"
-          :expanded="!!expandedTiles['activity']"
-          @toggle="toggleExpand('activity')"
-        />
+          <DataListTile
+            title="Servitutter"
+            subtitle="Veirett, vannrett m.m."
+            list-title="Servitutter"
+            :items="easements"
+            :expanded="!!expandedTiles['easements']"
+            @toggle="toggleExpand('easements')"
+          />
+
+          <ActivityTile
+            :activities="activities"
+            :expanded="!!expandedTiles['activity']"
+            @toggle="toggleExpand('activity')"
+          />
+        </template>
+
+        <div v-else class="dashboard-page__placeholder">
+          Velg en eiendom i søkefeltet for å se detaljer, kart og aktivitetslogg.
+        </div>
       </BentoGrid>
     </section>
   </main>
@@ -192,6 +205,19 @@ const toggleExpand = (id: string) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.dashboard-page__placeholder {
+  grid-column: 1 / -1;
+  min-height: 220px;
+  border-radius: 1rem;
+  border: 1px dashed rgba(var(--accent-rgb), 0.35);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(var(--accent-rgb), 0.04);
 }
 </style>
 
