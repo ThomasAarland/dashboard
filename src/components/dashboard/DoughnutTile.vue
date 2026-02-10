@@ -1,46 +1,43 @@
 <template>
   <BentoTile :title="stat.label" :col-span="1" :expanded-col-span="2">
-    <DoughnutChart
-      v-if="hasDetails"
-      :chart-data="chartData"
-      :chart-options="chartOptions"
-    />
-    <div v-else class="no-data">
-      Ingen detaljdata tilgjengelig
-    </div>
+    <DoughnutChart :chart-data="chartData" :chart-options="chartOptions" />
   </BentoTile>
 </template>
 
 <script setup lang="ts">
-import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from 'chart.js'
-import { computed } from 'vue'
-import type { StatSummary } from '../../services/dashboardService'
-import DoughnutChart from '../../widgets/DoughnutChart.vue'
 import BentoTile from '../bento/BentoTile.vue'
+import DoughnutChart from '../../widgets/DoughnutChart.vue'
+import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from 'chart.js'
+import type { StatSummary } from '../../services/dashboardService'
+import { computed } from 'vue'
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement)
 
-// Props med opsjonell details-array
+// Props med optional details
 const props = defineProps<{ stat: StatSummary & { details?: { owner: string; value: number }[] } }>()
 
-// Sjekk om details finnes
-const hasDetails = computed(() => Array.isArray(props.stat.details) && props.stat.details.length > 0)
+// Hvis details mangler, bruk dummydata
+const chartData = computed(() => {
+  const details = props.stat.details && props.stat.details.length
+    ? props.stat.details
+    : [
+        { owner: 'Dummy 1', value: 40 },
+        { owner: 'Dummy 2', value: 30 },
+        { owner: 'Dummy 3', value: 30 }
+      ]
 
-// Doughnut-data
-const chartData = computed(() => ({
-  labels: props.stat.details?.map(d => d.owner) || [],
-  datasets: [
-    {
-      data: props.stat.details?.map(d => d.value) || [],
-      backgroundColor: [
-        '#4caf50', '#ff9800', '#2196f3', '#9c27b0', '#00bcd4', '#ffc107'
-      ],
-      borderWidth: 1
-    }
-  ]
-}))
+  return {
+    labels: details.map(d => d.owner),
+    datasets: [
+      {
+        data: details.map(d => d.value),
+        backgroundColor: ['#4caf50', '#ff9800', '#2196f3', '#9c27b0', '#00bcd4', '#ffc107'],
+        borderWidth: 1
+      }
+    ]
+  }
+})
 
-// Doughnut-options
 const chartOptions = {
   responsive: true,
   plugins: {
@@ -53,15 +50,3 @@ const chartOptions = {
         }
       }
     },
-    legend: { position: 'bottom' }
-  }
-}
-</script>
-
-<style scoped>
-.no-data {
-  text-align: center;
-  color: var(--muted);
-  padding: 1rem;
-}
-</style>

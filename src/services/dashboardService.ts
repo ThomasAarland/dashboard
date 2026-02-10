@@ -3,9 +3,8 @@ export interface StatSummary {
   label: string
   value?: string
   trend?: string
-  details?: { owner: string; value: number }[] // <-- legg til dette
+  details?: { owner: string; value: number }[] // For DoughnutTile
 }
-
 
 export interface ActivityEntry {
   id: string | number
@@ -30,12 +29,36 @@ export interface PropertyDashboardData {
 }
 
 export function fetchDashboardData(): Promise<PropertyDashboardData> {
-  // Enkel mock av eiendomsdata – bytt til ekte Ambita-integrasjon senere
   return Promise.resolve({
     headlineStats: [
-      { id: 'area', label: 'Tomteareal', value: '750 m²' },
-      { id: 'buildings', label: 'Bygninger', value: '2' },
-      { id: 'owners', label: 'Antall eiere', value: '3' }
+      {
+        id: 'area',
+        label: 'Tomteareal',
+        value: '750 m²',
+        details: [
+          { owner: 'Tomt', value: 60 },
+          { owner: 'Hage', value: 40 }
+        ]
+      },
+      {
+        id: 'buildings',
+        label: 'Bygninger',
+        value: '2',
+        details: [
+          { owner: 'Hovedbygning', value: 70 },
+          { owner: 'Garasje', value: 30 }
+        ]
+      },
+      {
+        id: 'owners',
+        label: 'Antall eiere',
+        value: '3',
+        details: [
+          { owner: 'Ola Nordmann', value: 50 },
+          { owner: 'Kari Nordmann', value: 25 },
+          { owner: 'Per Hansen', value: 25 }
+        ]
+      }
     ],
     basicData: [
       { id: 'matrikkel', label: 'Gnr/Bnr: 12/345' },
@@ -73,4 +96,3 @@ export function fetchDashboardData(): Promise<PropertyDashboardData> {
     ]
   })
 }
-

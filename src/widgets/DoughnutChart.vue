@@ -3,7 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { Chart, ChartData, ChartOptions } from 'chart.js';
+import type { ChartData, ChartOptions } from 'chart.js';
+import { Chart } from 'chart.js';
+
 import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
