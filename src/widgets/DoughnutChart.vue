@@ -3,9 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ChartData, ChartOptions } from 'chart.js'
-import { Chart } from 'chart.js'
-import { ref, onMounted, watch } from 'vue'
+import type { ChartData, ChartOptions } from 'chart.js';
+import { Chart } from 'chart.js';
+
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   chartData: ChartData
@@ -40,6 +41,6 @@ watch(
 <style scoped>
 canvas {
   width: 100% !important;
-  height: 300px !important;
+  height: 100% !important;
 }
 </style>
