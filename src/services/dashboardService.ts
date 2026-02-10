@@ -3,7 +3,7 @@ export interface StatSummary {
   label: string
   value?: string
   trend?: string
-  details?: { owner: string; value: number }[] // For DoughnutTile
+  details?: { owner: string; value: number }[] // For DoughnutChart
 }
 
 export interface ActivityEntry {
@@ -36,8 +36,9 @@ export function fetchDashboardData(): Promise<PropertyDashboardData> {
         label: 'Tomteareal',
         value: '750 m²',
         details: [
-          { owner: 'Tomt', value: 60 },
-          { owner: 'Hage', value: 40 }
+          { owner: 'Ola Nordmann', value: 50 },
+          { owner: 'Kari Nordmann', value: 30 },
+          { owner: 'Per Hansen', value: 20 }
         ]
       },
       {
