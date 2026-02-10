@@ -1,12 +1,17 @@
 <template>
   <BentoTile
-    class="map-tile"
-    title="Kart"
-    subtitle="Plassering i kart (valgfritt)"
-    :col-span="4"
-    :expanded-col-span="4"
-    :expanded="expanded"
-  >
+  class="map-tile"
+  title="Kart"
+  subtitle="Plassering i kart (valgfritt)"
+  :col-span="2"
+  :expanded-col-span="4"
+  :row-span="2"
+  :expanded-row-span="4"
+  :expanded="expanded"
+  :clickable="true"
+  @click="emit('toggle')"
+>
+
     <div class="map-placeholder">
       <div class="map-placeholder__pin" />
       <div class="map-placeholder__text">
@@ -17,22 +22,25 @@
 </template>
 
 <script setup lang="ts">
-import BentoTile from '../bento/BentoTile.vue'
+import BentoTile from '../bento/BentoTile.vue';
 
 const props = defineProps<{ expanded: boolean }>()
+const emit = defineEmits(['toggle'])
+
 </script>
 
 <style scoped>
 :deep(.map-tile) {
-  min-height: 420px;
-  position: sticky;
-  top: 1rem;
+  /*min-height: 420px;*/
+  /* position: sticky; */
+  /* top: 1rem; */
   align-self: start;
 }
 
+
 .map-placeholder {
   height: 100%;
-  min-height: 560px;
+  /*min-height: 560px;*/
   border-radius: 0.9rem;
   border: 1px dashed rgba(var(--accent-2-rgb), 0.5);
   background:

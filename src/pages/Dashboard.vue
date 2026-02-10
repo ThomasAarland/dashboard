@@ -2,12 +2,11 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import BentoGrid from '../components/bento/BentoGrid.vue'
-import { useDashboard } from '../composables/useDashboard'
 import AccessSearchTile from '../components/dashboard/AccessSearchTile.vue'
-import HeadlineStatTile from '../components/dashboard/HeadlineStatTile.vue'
+import ActivityTile from '../components/dashboard/ActivityTile.vue'
 import DataListTile from '../components/dashboard/DataListTile.vue'
 import MapTile from '../components/dashboard/MapTile.vue'
-import ActivityTile from '../components/dashboard/ActivityTile.vue'
+import { useDashboard } from '../composables/useDashboard'
 import type { PropertySearchResult } from '../models/property'
 
 const { data, loading, error, reload } = useDashboard()
@@ -64,11 +63,13 @@ const handlePropertySelected = (property: PropertySearchResult) => {
       <BentoGrid>
         <AccessSearchTile @property-selected="handlePropertySelected" />
 
+        
         <template v-if="hasSelectedProperty">
+          <!--
           <template v-if="headlineStats.length">
             <HeadlineStatTile v-for="stat in headlineStats" :key="stat.id" :stat="stat" />
           </template>
-
+        -->
           <DataListTile
             title="Identifikasjon"
             subtitle="Gnr/Bnr og type"
@@ -92,17 +93,6 @@ const handlePropertySelected = (property: PropertySearchResult) => {
           />
 
           <DataListTile
-            title="Bygninger tilknyttet eiendommen"
-            list-title="Bygninger"
-            :items="buildings"
-            :col-span="2"
-            :expanded-col-span="3"
-            :meta-text="`${buildingCount} registrerte bygninger`"
-            :expanded="!!expandedTiles['buildings']"
-            @toggle="toggleExpand('buildings')"
-          />
-
-          <DataListTile
             title="Hovedeiere"
             subtitle="Største andeler"
             list-title="Hovedandeler"
@@ -118,11 +108,22 @@ const handlePropertySelected = (property: PropertySearchResult) => {
           list-title="Øvrige andeler"
           :items="secondaryOwners"
           :meta-text="`${secondaryOwners.length} øvrige eiere`"
-          :col-span="2"
+          :col-span="1"
           :expanded-col-span="2"
-          :expanded="true"
-          :clickable="false"
+          :expanded="!!expandedTiles['secondaryOwners']"
+            @toggle="toggleExpand('secondaryOwners')"
         />
+
+        <DataListTile
+            title="Bygninger tilknyttet eiendommen"
+            list-title="Bygninger"
+            :items="buildings"
+            :col-span="2"
+            :expanded-col-span="3"
+            :meta-text="`${buildingCount} registrerte bygninger`"
+            :expanded="!!expandedTiles['buildings']"
+            @toggle="toggleExpand('buildings')"
+          />
 
           <DataListTile
             title="Eiendommens beliggenhet"

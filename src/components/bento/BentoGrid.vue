@@ -12,8 +12,10 @@
   display: grid;
   gap: 0.9rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: minmax(180px, auto);
   align-items: stretch;
 }
+
 
 @media (max-width: 1200px) {
   .bento-grid {

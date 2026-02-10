@@ -25,19 +25,33 @@ interface Props {
   subtitle?: string
   colSpan?: number
   expandedColSpan?: number
+  rowSpan?: number
+  expandedRowSpan?: number
   expanded?: boolean
   clickable?: boolean
 }
 
+
 const props = defineProps<Props>()
 
 const tileStyle = computed(() => {
-  const baseSpan = props.colSpan ?? 1
-  const span = props.expanded ? props.expandedColSpan ?? baseSpan : baseSpan
+  const baseColSpan = props.colSpan ?? 1
+  const colSpan = props.expanded
+    ? props.expandedColSpan ?? baseColSpan
+    : baseColSpan
+
+  const baseRowSpan = props.rowSpan ?? 1
+  const rowSpan = props.expanded
+    ? props.expandedRowSpan ?? baseRowSpan
+    : baseRowSpan
+
   return {
-    gridColumn: `span ${span}`
-  }
+  gridColumn: `span ${colSpan}`,
+  gridRow: `span ${rowSpan}`
+}
+
 })
+
 </script>
 
 <style scoped>
