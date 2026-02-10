@@ -12,8 +12,7 @@
   display: grid;
   gap: 0.9rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: minmax(180px, auto);
-  align-items: stretch;
+  grid-auto-rows: 180px;   /* ← denne er nøkkelen */
 }
 
 

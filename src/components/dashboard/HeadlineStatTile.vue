@@ -1,14 +1,7 @@
 <template>
   <BentoTile :title="stat.label" :col-span="1" :expanded-col-span="2">
-    <!-- Hvis detaljer finnes, vis DoughnutChart -->
-    <template v-if="stat.details && stat.details.length">
-      <DoughnutChart :chart-data="chartData" :chart-options="chartOptions" />
-    </template>
-
-    <!-- Hvis ingen detaljer, vis StatCard -->
-    <template v-else>
-      <StatCard :label="stat.label" :value="stat.value" :trend="stat.trend" />
-    </template>
+    <DoughnutChart v-if="stat.details?.length" :chart-data="chartData" :chart-options="chartOptions" />
+    <StatCard v-else :label="stat.label" :value="stat.value" :trend="stat.trend" />
   </BentoTile>
 </template>
 
@@ -18,10 +11,9 @@ import DoughnutChart from '../../widgets/DoughnutChart.vue';
 import StatCard from '../../widgets/StatCard.vue';
 import BentoTile from '../bento/BentoTile.vue';
 
-// Props
 const props = defineProps<{ stat: StatSummary }>()
 
-// For DoughnutChart
+// Dersom stat.details finnes, lag chartData
 const details = props.stat.details ?? []
 
 const chartData = {

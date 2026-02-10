@@ -1,3 +1,45 @@
+<script setup lang="ts">
+import { computed, reactive, ref } from 'vue'
+import BentoGrid from '../components/bento/BentoGrid.vue'
+import AccessSearchTile from '../components/dashboard/AccessSearchTile.vue'
+import ActivityTile from '../components/dashboard/ActivityTile.vue'
+import DataListTile from '../components/dashboard/DataListTile.vue'
+import DoughnutTile from '../components/dashboard/DoughnutTile.vue'
+import HeadlineStatTile from '../components/dashboard/HeadlineStatTile.vue'
+import MapTile from '../components/dashboard/MapTile.vue'
+import { useDashboard } from '../composables/useDashboard'
+import type { PropertySearchResult } from '../models/property'
+
+const { data, loading, error, reload } = useDashboard()
+
+const headlineStats = computed(() => data.value?.headlineStats ?? [])
+const basicIdentity = computed(() => data.value?.basicData.slice(0, 2) ?? [])
+const basicArea = computed(() => data.value?.basicData.slice(2) ?? [])
+const buildings = computed(() => data.value?.buildings ?? [])
+const primaryOwners = computed(() => data.value?.ownershipShares.slice(0, 2) ?? [])
+const secondaryOwners = computed(() => data.value?.ownershipShares.slice(2) ?? [])
+const locationItems = computed(() => data.value?.location ?? [])
+const mortgages = computed(() => data.value?.mortgages ?? [])
+const easements = computed(() => data.value?.easements ?? [])
+const activities = computed(() => data.value?.activities ?? [])
+
+const buildingCount = computed(() => buildings.value.length)
+const ownerCount = computed(() => (data.value?.ownershipShares.length ?? 0))
+
+const expandedTiles = reactive<Record<string, boolean>>({})
+const selectedProperty = ref<PropertySearchResult | null>(null)
+const hasSelectedProperty = computed(() => !!selectedProperty.value)
+
+const toggleExpand = (id: string) => {
+  expandedTiles[id] = !expandedTiles[id]
+}
+
+const handlePropertySelected = (property: PropertySearchResult) => {
+  selectedProperty.value = property
+  reload(property) // sender valgt eiendom til useDashboard
+}
+</script>
+
 <template>
   <main class="dashboard-page">
     <header class="dashboard-page__header">
@@ -17,19 +59,29 @@
       {{ error }}
     </section>
 
-    <section v-else-if="data" class="dashboard-page__content">
+    <section v-else class="dashboard-page__content">
       <BentoGrid>
+        <!-- Søk etter eiendom -->
         <AccessSearchTile @property-selected="handlePropertySelected" />
 
+        <!-- Innhold etter eiendom valgt -->
         <template v-if="hasSelectedProperty">
-          <!-- Headline stats -->
-          <HeadlineStatTile
+          <!-- Doughnut Tiles -->
+          <DoughnutTile
             v-for="stat in headlineStats"
             :key="stat.id"
+            v-if="stat.details && stat.details.length"
             :stat="stat"
           />
 
-          <!-- Basisopplysninger -->
+          <!-- StatCard Tiles (hvis du vil vise verdien som tekst) -->
+          <HeadlineStatTile
+            v-for="stat in headlineStats"
+            :key="'statcard-' + stat.id"
+            :stat="stat"
+          />
+
+          <!-- DataListTiles -->
           <DataListTile
             title="Identifikasjon"
             subtitle="Gnr/Bnr og type"
@@ -52,7 +104,6 @@
             @toggle="toggleExpand('basicArea')"
           />
 
-          <!-- Eiere -->
           <DataListTile
             title="Hovedeiere"
             subtitle="Største andeler"
@@ -75,7 +126,6 @@
             @toggle="toggleExpand('secondaryOwners')"
           />
 
-          <!-- Bygninger -->
           <DataListTile
             title="Bygninger tilknyttet eiendommen"
             list-title="Bygninger"
@@ -87,7 +137,6 @@
             @toggle="toggleExpand('buildings')"
           />
 
-          <!-- Beliggenhet -->
           <DataListTile
             title="Eiendommens beliggenhet"
             list-title="Adresse, kommune, krets"
@@ -100,7 +149,6 @@
 
           <MapTile :expanded="!!expandedTiles['map']" @toggle="toggleExpand('map')" />
 
-          <!-- Pant og servitutter -->
           <DataListTile
             title="Pant"
             subtitle="Hvilke banker har sikkerhet?"
@@ -119,7 +167,6 @@
             @toggle="toggleExpand('easements')"
           />
 
-          <!-- Aktiviteter -->
           <ActivityTile
             :activities="activities"
             :expanded="!!expandedTiles['activity']"
@@ -127,6 +174,7 @@
           />
         </template>
 
+        <!-- Placeholder hvis ingen valgt eiendom -->
         <div v-else class="dashboard-page__placeholder">
           Velg en eiendom i søkefeltet for å se detaljer, kart og aktivitetslogg.
         </div>
@@ -134,47 +182,6 @@
     </section>
   </main>
 </template>
-
-<script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
-import BentoGrid from '../components/bento/BentoGrid.vue'
-import AccessSearchTile from '../components/dashboard/AccessSearchTile.vue'
-import ActivityTile from '../components/dashboard/ActivityTile.vue'
-import DataListTile from '../components/dashboard/DataListTile.vue'
-import HeadlineStatTile from '../components/dashboard/HeadlineStatTile.vue'
-import MapTile from '../components/dashboard/MapTile.vue'
-import { useDashboard } from '../composables/useDashboard'
-import type { PropertySearchResult } from '../models/property'
-
-const { data, loading, error, reload } = useDashboard()
-
-const headlineStats = computed(() => data.value?.headlineStats ?? [])
-const basicIdentity = computed(() => data.value?.basicData.slice(0, 2) ?? [])
-const basicArea = computed(() => data.value?.basicData.slice(2) ?? [])
-const buildings = computed(() => data.value?.buildings ?? [])
-const primaryOwners = computed(() => data.value?.ownershipShares.slice(0, 2) ?? [])
-const secondaryOwners = computed(() => data.value?.ownershipShares.slice(2) ?? [])
-const locationItems = computed(() => data.value?.location ?? [])
-const mortgages = computed(() => data.value?.mortgages ?? [])
-const easements = computed(() => data.value?.easements ?? [])
-const activities = computed(() => data.value?.activities ?? [])
-
-const buildingCount = computed(() => buildings.value.length)
-const ownerCount = computed(() => data.value?.ownershipShares.length ?? 0)
-
-const expandedTiles = reactive<Record<string, boolean>>({})
-const selectedProperty = ref<PropertySearchResult | null>(null)
-const hasSelectedProperty = computed(() => !!selectedProperty.value)
-
-const toggleExpand = (id: string) => {
-  expandedTiles[id] = !expandedTiles[id]
-}
-
-const handlePropertySelected = (property: PropertySearchResult) => {
-  selectedProperty.value = property
-  reload()
-}
-</script>
 
 <style scoped>
 .dashboard-page {

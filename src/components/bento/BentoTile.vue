@@ -17,44 +17,39 @@
   </article>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue'
 
-export default defineComponent({
-  name: 'BentoTile',
-  props: {
-    title: String,
-    subtitle: String,
-    colSpan: Number,
-    expandedColSpan: Number,
-    rowSpan: Number,
-    expandedRowSpan: Number,
-    expanded: Boolean,
-    clickable: Boolean
-  },
-  setup(props, { slots }) {
-    const tileStyle = computed(() => {
-      const baseColSpan = props.colSpan ?? 1
-      const colSpan = props.expanded
-        ? props.expandedColSpan ?? baseColSpan
-        : baseColSpan
+interface Props {
+  title?: string
+  subtitle?: string
+  colSpan?: number
+  expandedColSpan?: number
+  rowSpan?: number
+  expandedRowSpan?: number
+  expanded?: boolean
+  clickable?: boolean
+}
 
-      const baseRowSpan = props.rowSpan ?? 1
-      const rowSpan = props.expanded
-        ? props.expandedRowSpan ?? baseRowSpan
-        : baseRowSpan
+const props = defineProps<Props>()
 
-      return {
-        gridColumn: `span ${colSpan}`,
-        gridRow: `span ${rowSpan}`
-      }
-    })
+const tileStyle = computed(() => {
+  const baseColSpan = props.colSpan ?? 1
+  const colSpan = props.expanded
+    ? props.expandedColSpan ?? baseColSpan
+    : baseColSpan
 
-    return { tileStyle, slots }
+  const baseRowSpan = props.rowSpan ?? 1
+  const rowSpan = props.expanded
+    ? props.expandedRowSpan ?? baseRowSpan
+    : baseRowSpan
+
+  return {
+    gridColumn: `span ${colSpan}`,
+    gridRow: `span ${rowSpan}`
   }
 })
 </script>
-
 
 <style scoped>
 .bento-tile {
@@ -62,10 +57,6 @@ export default defineComponent({
   padding: 1rem 1.05rem;
   background: var(--panel);
   border: 1px solid var(--border);
-  box-shadow:
-    0 14px 40px rgba(var(--accent-2-rgb), 0.08),
-    0 1px 0 rgba(58, 0, 107, 0.06) inset;
-  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -73,36 +64,8 @@ export default defineComponent({
   overflow: hidden;
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
-
-.bento-tile--interactive {
-  cursor: pointer;
-}
-
-.bento-tile:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(var(--accent-rgb), 0.25);
-  border-color: rgba(var(--accent-rgb), 0.45);
-}
-
-.bento-tile--expanded {
-  transform: translateY(0);
-}
-
-.bento-tile__header h2 {
-  font-size: 0.98rem;
-  font-weight: 650;
-}
-
-.bento-tile__subtitle {
-  font-size: 0.875rem;
-  color: var(--muted);
-  margin-top: 0.15rem;
-}
-
-.bento-tile__content {
-  flex: 1;
-  overflow: auto;
-}
+.bento-tile--interactive { cursor: pointer; }
+.bento-tile__header h2 { font-size: 0.98rem; font-weight: 650; }
+.bento-tile__subtitle { font-size: 0.875rem; color: var(--muted); margin-top: 0.15rem; }
+.bento-tile__content { flex: 1; overflow: auto; }
 </style>
