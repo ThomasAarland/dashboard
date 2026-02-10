@@ -44,16 +44,16 @@ const props = defineProps<Props>()
   gap: 0.5rem;
   padding: 0.35rem 0;
   font-size: 0.875rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.2);
 }
 
 .activity-widget__time {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--muted);
   min-width: 5.5rem;
 }
 
 .activity-widget__text {
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text);
 }
 
 .activity-widget__item:last-child {

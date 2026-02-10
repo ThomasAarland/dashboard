@@ -40,8 +40,8 @@ const props = defineProps<Props>()
 
 .list-widget__item {
   padding: 0.35rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.78);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.18);
+  color: var(--text);
 }
 
 .list-widget__item:last-child {

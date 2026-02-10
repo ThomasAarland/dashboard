@@ -25,13 +25,13 @@ const props = withDefaults(defineProps<Props>(), {
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--muted);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  background: #fff;
+  color: var(--text);
 }
 
 .badge--neutral {
-  border-color: rgba(var(--accent-rgb), 0.45);
+  border-color: rgba(var(--accent-rgb), 0.4);
   background: rgba(var(--accent-rgb), 0.12);
   color: var(--text);
 }
