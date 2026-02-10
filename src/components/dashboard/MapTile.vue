@@ -1,14 +1,13 @@
 <template>
   <BentoTile
+    class="map-tile"
     title="Kart"
     subtitle="Plassering i kart (valgfritt)"
-    :col-span="2"
+    :col-span="4"
     :expanded-col-span="4"
-    clickable
     :expanded="expanded"
-    @click="emit('toggle')"
   >
-    <div class="map-placeholder" :class="{ 'map-placeholder--expanded': expanded }">
+    <div class="map-placeholder">
       <div class="map-placeholder__pin" />
       <div class="map-placeholder__text">
         Kartvisning kan integreres her (Ambita kart / annen karttjeneste).
@@ -21,15 +20,21 @@
 import BentoTile from '../bento/BentoTile.vue'
 
 const props = defineProps<{ expanded: boolean }>()
-const emit = defineEmits<{ (e: 'toggle'): void }>()
 </script>
 
 <style scoped>
+:deep(.map-tile) {
+  min-height: 420px;
+  position: sticky;
+  top: 1rem;
+  align-self: start;
+}
+
 .map-placeholder {
   height: 100%;
-  min-height: 220px;
+  min-height: 560px;
   border-radius: 0.9rem;
-  border: 1px dashed rgba(var(--accent-2-rgb), 0.3);
+  border: 1px dashed rgba(var(--accent-2-rgb), 0.5);
   background:
     radial-gradient(480px 220px at 50% 0%, rgba(var(--accent-rgb), 0.15), transparent 60%),
     #ffffff;
@@ -37,12 +42,6 @@ const emit = defineEmits<{ (e: 'toggle'): void }>()
   place-items: center;
   gap: 0.5rem;
   padding: 1rem;
-  transition: min-height 220ms ease, border-color 160ms ease, box-shadow 160ms ease;
-}
-
-.map-placeholder--expanded {
-  min-height: 360px;
-  border-color: rgba(var(--accent-2-rgb), 0.5);
   box-shadow: 0 20px 45px rgba(var(--accent-2-rgb), 0.15);
 }
 
