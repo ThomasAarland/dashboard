@@ -1,9 +1,11 @@
 export interface StatSummary {
   id: string
   label: string
-  value: string
+  value?: string
   trend?: string
+  details?: { owner: string; value: number }[] // <-- legg til dette
 }
+
 
 export interface ActivityEntry {
   id: string | number

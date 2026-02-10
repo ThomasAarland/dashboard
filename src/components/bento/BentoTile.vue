@@ -17,42 +17,44 @@
   </article>
 </template>
 
-<script setup lang="ts">
-import { computed } from 'vue'
+<script lang="ts">
+import { computed, defineComponent } from 'vue';
 
-interface Props {
-  title?: string
-  subtitle?: string
-  colSpan?: number
-  expandedColSpan?: number
-  rowSpan?: number
-  expandedRowSpan?: number
-  expanded?: boolean
-  clickable?: boolean
-}
+export default defineComponent({
+  name: 'BentoTile',
+  props: {
+    title: String,
+    subtitle: String,
+    colSpan: Number,
+    expandedColSpan: Number,
+    rowSpan: Number,
+    expandedRowSpan: Number,
+    expanded: Boolean,
+    clickable: Boolean
+  },
+  setup(props, { slots }) {
+    const tileStyle = computed(() => {
+      const baseColSpan = props.colSpan ?? 1
+      const colSpan = props.expanded
+        ? props.expandedColSpan ?? baseColSpan
+        : baseColSpan
 
+      const baseRowSpan = props.rowSpan ?? 1
+      const rowSpan = props.expanded
+        ? props.expandedRowSpan ?? baseRowSpan
+        : baseRowSpan
 
-const props = defineProps<Props>()
+      return {
+        gridColumn: `span ${colSpan}`,
+        gridRow: `span ${rowSpan}`
+      }
+    })
 
-const tileStyle = computed(() => {
-  const baseColSpan = props.colSpan ?? 1
-  const colSpan = props.expanded
-    ? props.expandedColSpan ?? baseColSpan
-    : baseColSpan
-
-  const baseRowSpan = props.rowSpan ?? 1
-  const rowSpan = props.expanded
-    ? props.expandedRowSpan ?? baseRowSpan
-    : baseRowSpan
-
-  return {
-  gridColumn: `span ${colSpan}`,
-  gridRow: `span ${rowSpan}`
-}
-
+    return { tileStyle, slots }
+  }
 })
-
 </script>
+
 
 <style scoped>
 .bento-tile {

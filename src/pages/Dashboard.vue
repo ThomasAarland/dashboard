@@ -65,11 +65,22 @@ const handlePropertySelected = (property: PropertySearchResult) => {
 
         
         <template v-if="hasSelectedProperty">
+
+          <template v-if="hasSelectedProperty">
+            <HeadlineStatTile
+            v-for="stat in headlineStats"
+            :key="stat.id"
+            :stat="stat"
+            />
+          </template>
+
+
+
           <!--
           <template v-if="headlineStats.length">
             <HeadlineStatTile v-for="stat in headlineStats" :key="stat.id" :stat="stat" />
           </template>
-        -->
+           -->
           <DataListTile
             title="Identifikasjon"
             subtitle="Gnr/Bnr og type"
