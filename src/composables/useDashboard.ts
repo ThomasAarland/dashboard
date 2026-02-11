@@ -2,6 +2,8 @@ import { onMounted, ref } from 'vue'
 import type { PropertyDashboardData } from '../services/dashboardService'
 import { fetchDashboardData } from '../services/dashboardService'
 
+// Encapsulates loading/error lifecycle for the dashboard mock API.
+
 export function useDashboard() {
   const data = ref<PropertyDashboardData | null>(null)
   const loading = ref(false)
@@ -29,4 +31,3 @@ export function useDashboard() {
     reload: load
   }
 }
-

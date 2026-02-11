@@ -1,4 +1,5 @@
 <template>
+  <!-- Generic card wrapper that adds consistent hover effects and column span logic -->
   <article
     class="bento-tile"
     :class="{
@@ -31,6 +32,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
+// Calculate the current column span so tiles can expand/collapse smoothly.
 const tileStyle = computed(() => {
   const baseSpan = props.colSpan ?? 1
   const span = props.expanded ? props.expandedColSpan ?? baseSpan : baseSpan

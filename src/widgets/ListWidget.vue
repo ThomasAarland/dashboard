@@ -1,4 +1,5 @@
 <template>
+  <!-- Shared list renderer for the various textual data tiles -->
   <div class="list-widget">
     <h3 v-if="title" class="list-widget__title">{{ title }}</h3>
     <ul class="list-widget__list">

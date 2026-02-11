@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Default Vite/ Vue starter component kept for quick experiments.
 import { ref } from 'vue'
 
 defineProps<{ msg: string }>()

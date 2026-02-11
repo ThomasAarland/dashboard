@@ -1,3 +1,4 @@
+/* Global color system and layout primitives shared by every component */
 :root {
   --bg-0: #ffffff;
   --bg-1: #f9f2ff;

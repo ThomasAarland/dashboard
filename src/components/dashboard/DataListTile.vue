@@ -1,4 +1,5 @@
 <template>
+  <!-- Generic list tile used for most textual datasets -->
   <BentoTile
     :title="title"
     :subtitle="subtitle"
@@ -41,6 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{ (e: 'toggle'): void }>()
 
+// Only emit toggle requests when the tile is marked as interactive.
 const handleClick = () => {
   if (props.clickable) {
     emit('toggle')

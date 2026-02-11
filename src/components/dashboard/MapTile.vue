@@ -1,4 +1,5 @@
 <template>
+  <!-- Dedicated full-width tile reserved for future map integrations -->
   <BentoTile
     class="map-tile"
     title="Kart"

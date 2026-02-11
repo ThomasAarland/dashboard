@@ -1,4 +1,5 @@
 <template>
+  <!-- Minimal stat label/value stack -->
   <div class="stat-widget">
     <div class="stat-widget__label">{{ label }}</div>
     <div class="stat-widget__value">{{ value }}</div>

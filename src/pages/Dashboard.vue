@@ -31,6 +31,7 @@ const expandedTiles = reactive<Record<string, boolean>>({})
 const selectedProperty = ref<PropertySearchResult | null>(null)
 const hasSelectedProperty = computed(() => !!selectedProperty.value)
 
+// Quick lookup map so individual sections can grab the exact stat they need
 const statsById = computed<Record<string, StatSummary | undefined>>(() => {
   const map: Record<string, StatSummary | undefined> = {}
   headlineStats.value.forEach((stat) => {
@@ -75,11 +76,13 @@ const handlePropertySelected = (property: PropertySearchResult) => {
 
     <section v-else-if="data" class="dashboard-page__content">
       <BentoGrid>
+        <!-- Rad 1: søk/tilgangsinformasjon -->
         <div class="dashboard-row dashboard-row--search">
           <AccessSearchTile @property-selected="handlePropertySelected" />
         </div>
 
         <template v-if="hasSelectedProperty">
+          <!-- Rad 2: tomteinfo, areal og identifikasjon -->
           <div class="dashboard-row dashboard-row--line">
             <HeadlineStatTile v-if="areaStat" :stat="areaStat" />
             <DataListTile
@@ -100,6 +103,7 @@ const handlePropertySelected = (property: PropertySearchResult) => {
             />
           </div>
 
+          <!-- Rad 3: eiere + antall eiere -->
           <div class="dashboard-row dashboard-row--owners">
             <DataListTile
               title="Hovedeiere"
@@ -126,6 +130,7 @@ const handlePropertySelected = (property: PropertySearchResult) => {
             <HeadlineStatTile v-if="ownerCountStat" :stat="ownerCountStat" />
           </div>
 
+          <!-- Rad 4: bygninger og lokasjon -->
           <div class="dashboard-row dashboard-row--buildings">
             <HeadlineStatTile v-if="buildingStat" :stat="buildingStat" />
             <DataListTile
@@ -145,10 +150,12 @@ const handlePropertySelected = (property: PropertySearchResult) => {
             />
           </div>
 
+          <!-- Rad 5: kart -->
           <div class="dashboard-row dashboard-row--map">
             <MapTile :expanded="true" />
           </div>
 
+          <!-- Rad 6: pant, aktivitet og servitutter -->
           <div class="dashboard-row dashboard-row--legal">
             <DataListTile
               title="Pant"
@@ -226,6 +233,7 @@ const handlePropertySelected = (property: PropertySearchResult) => {
   gap: 1rem;
 }
 
+/* Felles rad-oppsett slik at hver seksjon kan ha egne kolonner */
 .dashboard-row {
   grid-column: 1 / -1;
   display: grid;

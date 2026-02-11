@@ -1,4 +1,5 @@
 <template>
+  <!-- Generic card primitive with optional header/footer slots -->
   <section class="card">
     <header v-if="$slots.header" class="card__header">
       <slot name="header" />

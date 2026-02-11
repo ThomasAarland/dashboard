@@ -1,4 +1,5 @@
 <template>
+  <!-- Responsive grid wrapper for all dashboard tiles -->
   <section class="bento-grid">
     <slot />
   </section>
@@ -8,6 +9,7 @@
 </script>
 
 <style scoped>
+/* Grid defines the base four-column layout for desktop */
 .bento-grid {
   display: grid;
   gap: 0.9rem;

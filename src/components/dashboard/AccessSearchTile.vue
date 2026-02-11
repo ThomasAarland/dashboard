@@ -1,4 +1,5 @@
 <template>
+  <!-- Handles authentication badges and mocked property search/selection -->
   <BentoTile
     title="Tilgang og eiendomssøk"
     subtitle="Innlogging via Ambita og oppslag i eiendommer du har grunnlag for å se"
@@ -84,6 +85,7 @@ import BentoTile from '../bento/BentoTile.vue'
 import Badge from '../ui/Badge.vue'
 import type { PropertySearchResult } from '../../models/property'
 
+// Simple mock data so the tile can demonstrate the search UX without back-end calls.
 const propertySuggestions: PropertySearchResult[] = [
   { id: 'prop-1', address: 'Eksempelveien 10', municipality: 'Oslo', gnrBnr: '12/345' },
   { id: 'prop-2', address: 'Fjordgløttveien 7', municipality: 'Bergen', gnrBnr: '88/21' },

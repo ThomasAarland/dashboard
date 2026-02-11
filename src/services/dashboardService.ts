@@ -1,3 +1,4 @@
+// Typed API surface + mock data source that feeds the UI.
 export interface StatSummary {
   id: string
   label: string
@@ -71,4 +72,3 @@ export function fetchDashboardData(): Promise<PropertyDashboardData> {
     ]
   })
 }
-

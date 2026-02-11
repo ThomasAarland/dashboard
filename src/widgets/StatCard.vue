@@ -1,4 +1,5 @@
 <template>
+  <!-- Tiny KPI card with a pseudo gauge for extra visual feedback -->
   <div class="stat-card">
     <div class="stat-card__value">{{ value }}</div>
     <div v-if="trend" class="stat-card__trend">{{ trend }}</div>
@@ -19,6 +20,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
+// Best-effort attempt to extract a percentage-like signal from any stat value.
 const percent = computed(() => {
   if (typeof props.value === 'number') {
     return clampPercent(props.value)

@@ -1,4 +1,5 @@
 <template>
+  <!-- Wraps the activity widget inside a tile with expand/collapse support -->
   <BentoTile
     title="Aktivitet i grunnboken"
     subtitle="De viktigste hendelsene knyttet til eiendommen"
@@ -18,5 +19,6 @@ import ActivityWidget from '../../widgets/ActivityWidget.vue'
 import type { ActivityEntry } from '../../services/dashboardService'
 
 const props = defineProps<{ activities: ActivityEntry[]; expanded: boolean }>()
+// Expose a toggle event so the parent grid can manage expanded state.
 const emit = defineEmits<{ (e: 'toggle'): void }>()
 </script>

@@ -1,4 +1,5 @@
 <template>
+  <!-- Pill shaped badge with contextual variants -->
   <span class="badge" :class="`badge--${variant}`">
     <slot />
   </span>

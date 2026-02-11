@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import Dashboard from './pages/Dashboard.vue';
+// Root component simply renders the dashboard page so Vite/Vue can hydrate it.
+import Dashboard from './pages/Dashboard.vue'
 </script>
 
 <template>

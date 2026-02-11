@@ -1,4 +1,5 @@
 <template>
+  <!-- Lightweight list rendering of activity feed items -->
   <div class="activity-widget">
     <h3 class="activity-widget__title">Siste aktivitet</h3>
     <ul class="activity-widget__list">
@@ -21,6 +22,7 @@ interface Props {
   activities: ActivityItem[]
 }
 
+// Keep the widget dumb by only accepting already formatted strings.
 const props = defineProps<Props>()
 </script>
 
