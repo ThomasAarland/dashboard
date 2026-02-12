@@ -36,17 +36,17 @@ export function fetchDashboardData(): Promise<PropertyDashboardData> {
         label: 'Tomteareal',
         value: '750 m²',
         details: [
-          { owner: 'Tomt', value: 60 },
-          { owner: 'Hage', value: 40 }
+          { owner: 'Tomt', value: 450 },
+          { owner: 'Hage', value: 300 }
         ]
       },
       {
         id: 'buildings',
         label: 'Bygninger',
-        value: '2',
+        value: '216 m²',
         details: [
-          { owner: 'Hovedbygning', value: 70 },
-          { owner: 'Garasje', value: 30 }
+          { owner: 'Hovedbygning', value: 180 },
+          { owner: 'Garasje', value: 36 }
         ]
       },
       {

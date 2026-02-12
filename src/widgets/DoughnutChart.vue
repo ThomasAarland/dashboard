@@ -4,13 +4,21 @@
 
 <script setup lang="ts">
 import type { ChartData, ChartOptions } from 'chart.js';
-import { Chart } from 'chart.js';
+import {
+  ArcElement,
+  Chart,
+  DoughnutController,
+  Legend,
+  Tooltip
+} from 'chart.js';
 
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+
+Chart.register(DoughnutController, ArcElement, Tooltip, Legend)
 
 const props = defineProps<{
-  chartData: ChartData
-  chartOptions?: ChartOptions
+  chartData: ChartData<'doughnut'>
+  chartOptions?: ChartOptions<'doughnut'>
 }>()
 
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -24,6 +32,11 @@ onMounted(() => {
       options: props.chartOptions
     })
   }
+})
+
+onBeforeUnmount(() => {
+  chartInstance?.destroy()
+  chartInstance = null
 })
 
 watch(

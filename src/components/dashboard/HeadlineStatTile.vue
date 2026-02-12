@@ -1,6 +1,6 @@
 <template>
   <DoughnutTile v-if="stat.details && stat.details.length" :stat="stat" />
-  <StatCard v-else :label="stat.label" :value="stat.value" :trend="stat.trend" />
+  <StatCard v-else :label="stat.label" :value="stat.value ?? ''" :trend="stat.trend" />
 </template>
 
 <script setup lang="ts">
